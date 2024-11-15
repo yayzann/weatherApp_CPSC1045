@@ -1,0 +1,38 @@
+.tSButton-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.typeSelect {
+    background-color: blueviolet;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    width: 250px;
+    height: 120px;
+    color: white;
+    font-size: large;
+    border-style: dashed;
+    border-color: bisque;
+    border-width: 5px;
+    align-items: center;
+    display: inline-block;
+    transition: background-color 0.5s ease;
+    
+}
+
+.typeSelect:hover{
+    background-color: aquamarine;
+    color: black;
+    cursor: pointer;
+}
+
+h1 {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    display: flex;
+    justify-content: center;
+}
+h2 {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    display: flex;
+    justify-content: center;
+}
