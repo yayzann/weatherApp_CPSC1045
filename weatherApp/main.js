@@ -10,20 +10,17 @@ async function getWeather() {
     return data;
 }
 
-const width = window.innerWidth-1
-const height = window.innerHeight-1
+const width = window.innerWidth
+const height = window.innerHeight
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 canvas.style.position = 'relative';
 canvas.style.top = '20px';
-canvas.style.left = '40px'
+//canvas.style.left = '40px'
 function fullMode() {
-    ctx.fillStyle = 'black'
-    ctx.beginPath();
-    ctx.rect(0,0,width,height);
-    ctx.closePath();
-    ctx.stroke();
     interpretCode();
+    updatePosition();
+    drawSunny();
 }
 
 async function interpretCode() {
@@ -37,11 +34,19 @@ async function interpretCode() {
 
 
 function offlineCodeGen() {
-    
+
 }
 
 function drawSunny() {
-
+    ctx.fillStyle = 'yellow';
+    ctx.arc(800,0,90,45,0);
+    ctx.fill();
+    ctx.strokeStyle = 'yellow';
+    ctx.beginPath();
+    ctx.moveTo(700,5);
+    ctx.lineTo(645,5);
+    ctx.moveTo(701,33);
+    ctx.lineTo(649,38);
 }
 
 function drawRainy() {
@@ -55,3 +60,11 @@ function drawOvercast() {
 function drawSnow() {
 
 }
+
+
+function updatePosition() {
+    let outputX = document.getElementById('xout');
+    let outputY = document.getElementById('yout');
+    outputX.innerHTML = (event.offsetX);
+    outputY.innerHTML = (event.offsetY);
+} //for debugging
