@@ -9,13 +9,17 @@ async function getWeather() {
     //console.log(data)
     return data;
 }
-
+let weatherCodes = [1000,1003,1006,1009,1030,1063,1069,
+    1072,1087,1114,1117,1135,1147,1150,1153,1168,1171,1180,1183,
+    1186,1189,1192,1195,1201,1204,1207,1120,1213,1216,1219,1222,1225,1237,
+    1240,1243,1246,1249,1252,1255,1258,1261,1264,1273,1276,1279,1282];
 const width = window.innerWidth
 const height = window.innerHeight
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 canvas.style.position = 'relative';
 canvas.style.top = '20px';
+//console.log(weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) //for debugging
 //canvas.style.left = '40px'
 function fullMode() {
     interpretCode();
@@ -34,7 +38,20 @@ async function interpretCode() {
 
 
 function offlineCodeGen() {
+    switch (weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) {
+        case 1000:
+            drawSunny();
+        case 1003:
+        case 1006:
+        case 1009:
+        case 1030:
+            drawOvercast();
+        case 1063:
+        case 1069:
+        case 1072:
+        case 
 
+    }
 }
 
 function drawSunny() {
