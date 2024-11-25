@@ -1,9 +1,9 @@
 onButton.addEventListener('click',fullMode);
 offButton.addEventListener('click',offlineCodeGen);
 //offButton.addEventListener('click',testMode);
-async function getWeather() {
-    const key = '2afbfcd3d8b24fdf89f213443241711'
-    const city = 'Vancouver';
+async function getWeather() { // interaction with API
+    const key = '2afbfcd3d8b24fdf89f213443241711' //this needs to be removed from git.
+    const city = 'Vancouver'; //hardcoded cuz im hoping no one outside van is testing this, probably will switch to variable
     const url = `http://api.weatherapi.com/v1/current.json?key=${key}&q=${city}`;
     const response = await fetch(url);
     let data = await response.json();
@@ -13,19 +13,20 @@ async function getWeather() {
 let weatherCodes = [1000,1003,1006,1009,1030,1063,1069,
     1072,1087,1114,1117,1135,1147,1150,1153,1168,1171,1180,1183,
     1186,1189,1192,1195,1201,1204,1207,1120,1213,1216,1219,1222,1225,1237,
-    1240,1243,1246,1249,1252,1255,1258,1261,1264,1273,1276,1279,1282];
+    1240,1243,1246,1249,1252,1255,1258,1261,1264,1273,1276,1279,1282]; //index of all possible weather codes
 const width = window.innerWidth
 const height = window.innerHeight
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 canvas.style.position = 'relative';
 canvas.style.top = '20px';
-function fullMode() {
+
+function fullMode() { //operating with online functionality / full functionality of webapp
     interpretCode();
     updatePosition();
 }
 
-async function interpretCode() {
+async function interpretCode() { //interprets weather codes recieved from API, executes functions on canvas depending on data recieved.
     const data = await getWeather();
     const intData = {
         code: data.current.condition.code,
@@ -89,7 +90,7 @@ async function interpretCode() {
 
 
 
-function offlineCodeGen() {
+function offlineCodeGen() { //offline debugging mode, also here in case person grading assignment is offline
     switch (weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) {
         case 1000:
             drawSunny();
@@ -144,6 +145,11 @@ function offlineCodeGen() {
             drawSnow();
             break;
     }
+    buttonGen();
+
+}
+
+function buttonGen() { //basically debugging function ig? need to implement
 }
 
 function drawSunny() {
