@@ -1,4 +1,5 @@
 onButton.addEventListener('click',fullMode);
+offButton.addEventListener('click',offlineCodeGen);
 //offButton.addEventListener('click',testMode);
 async function getWeather() {
     const key = '2afbfcd3d8b24fdf89f213443241711'
@@ -19,12 +20,9 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 canvas.style.position = 'relative';
 canvas.style.top = '20px';
-//console.log(weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) //for debugging
-//canvas.style.left = '40px'
 function fullMode() {
     interpretCode();
     updatePosition();
-    drawSunny();
 }
 
 async function interpretCode() {
@@ -33,24 +31,118 @@ async function interpretCode() {
         code: data.current.condition.code,
         temp_c: data.current.temp_c 
     }
-    console.log(JSON.stringify(intData, null, 2));
+     switch (intData.code) {
+        case 1000:
+            drawSunny();
+            break;
+        case 1003:
+        case 1006:
+        case 1009:
+        case 1030:
+        case 1135:
+            drawOvercast();
+            break;
+        case 1063:
+        case 1069:
+        case 1072:
+        case 1087:
+        case 1150:
+        case 1153:
+        case 1168:
+        case 1171:
+        case 1180:
+        case 1183:
+        case 1186:
+        case 1189:
+        case 1192:
+        case 1195:
+        case 1198:
+        case 1201:
+        case 1204:
+        case 1207:
+        case 1240:
+        case 1243:
+        case 1246:
+        case 1249:
+        case 1252:
+            drawRainy();
+            break;
+        case 1114:
+        case 1117:
+        case 1147:
+        case 1213:
+        case 1216:
+        case 1219:
+        case 1222:
+        case 1225:
+        case 1237:
+        case 1255:
+        case 1258:
+        case 1261:
+        case 1264:
+        case 1279:
+        case 1282:
+            drawSnow();
+            break;
+    }
 }
+
 
 
 function offlineCodeGen() {
     switch (weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) {
         case 1000:
             drawSunny();
+            break;
         case 1003:
         case 1006:
         case 1009:
         case 1030:
+        case 1135:
             drawOvercast();
+            break;
         case 1063:
         case 1069:
         case 1072:
-        case 
-
+        case 1087:
+        case 1150:
+        case 1153:
+        case 1168:
+        case 1171:
+        case 1180:
+        case 1183:
+        case 1186:
+        case 1189:
+        case 1192:
+        case 1195:
+        case 1198:
+        case 1201:
+        case 1204:
+        case 1207:
+        case 1240:
+        case 1243:
+        case 1246:
+        case 1249:
+        case 1252:
+            drawRainy();
+            break;
+        case 1114:
+        case 1117:
+        case 1147:
+        case 1213:
+        case 1216:
+        case 1219:
+        case 1222:
+        case 1225:
+        case 1237:
+        case 1255:
+        case 1258:
+        case 1261:
+        case 1264:
+        case 1279:
+        case 1282:
+            drawSnow();
+            break;
     }
 }
 
@@ -67,14 +159,15 @@ function drawSunny() {
 }
 
 function drawRainy() {
-
+    console.log('its raining')
 }
 
 function drawOvercast() {
-
+    console.log('its ugly out')
 }
 
 function drawSnow() {
+    console.log('merry chrysler')
 
 }
 
