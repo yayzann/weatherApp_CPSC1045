@@ -7,7 +7,7 @@ async function getWeather() { // interaction with API
     const url = `http://api.weatherapi.com/v1/current.json?key=${key}&q=${city}`;
     const response = await fetch(url);
     let data = await response.json();
-    //console.log(data)
+    console.log(data)
     return data;
 }
 let weatherCodes = [1000,1003,1006,1009,1030,1063,1069,
@@ -22,11 +22,11 @@ canvas.style.position = 'relative';
 canvas.style.top = '20px';
 
 function fullMode() { //operating with online functionality / full functionality of webapp
-    interpretCode();
+    interpretCodes();
     updatePosition();
 }
 
-async function interpretCode() { //interprets weather codes recieved from API, executes functions on canvas depending on data recieved.
+async function interpretCodes() { //interprets weather codes recieved from API, executes functions on canvas depending on data recieved.
     const data = await getWeather();
     const intData = {
         code: data.current.condition.code,
@@ -145,38 +145,38 @@ function offlineCodeGen() { //offline debugging mode, also here in case person g
             drawSnow();
             break;
     }
-    buttonGen();
+    //buttonGen();
 
 }
 
 function buttonGen() { //basically debugging function ig? need to implement
+
 }
 
 function drawSunny() {
-    ctx.fillStyle = 'yellow';
-    ctx.arc(800,0,90,45,0);
-    ctx.fill();
-    ctx.strokeStyle = 'yellow';
-    ctx.beginPath();
-    ctx.moveTo(700,5);
-    ctx.lineTo(645,5);
-    ctx.moveTo(701,33);
-    ctx.lineTo(649,38);
+    console.log('you are my sunshine');
+    //animateSprite();
 }
 
 function drawRainy() {
-    console.log('its raining')
+    console.log('its raining');
+    //animateSprite();
 }
 
 function drawOvercast() {
-    console.log('its ugly out')
+    console.log('its ugly out');
+    //animateSprite();
 }
 
 function drawSnow() {
-    console.log('merry chrysler')
+    console.log('merry chrysler');
+    //animateSprite();
 
 }
 
+function animteSprite(spriteSrc) {
+
+}
 
 function updatePosition() {
     let outputX = document.getElementById('xout');
