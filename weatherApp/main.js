@@ -2,7 +2,7 @@ onButton.addEventListener('click',fullMode);
 offButton.addEventListener('click',offlineCodeGen);
 //offButton.addEventListener('click',testMode);
 async function getWeather() { // interaction with API
-    const key = '2afbfcd3d8b24fdf89f213443241711' //this needs to be removed from git.
+    const key = '093a6a79ca9649b09ae40739240412' //this needs to be removed from git.
     const city = 'Vancouver'; //hardcoded cuz im hoping no one outside van is testing this, probably will switch to variable
     const url = `http://api.weatherapi.com/v1/current.json?key=${key}&q=${city}`;
     const response = await fetch(url);
@@ -149,13 +149,15 @@ function offlineCodeGen() { //offline debugging mode, also here in case person g
 
 }
 
-function buttonGen() { //basically debugging function ig? need to implement
+function buttonGen() { //basically debugging function ig? need to implement buttons to change weather response or smth 
 
 }
 
 function drawSunny() {
     console.log('you are my sunshine');
-    //animateSprite();
+
+    animateSprite('assets/mrsunnyshine.png',200,200,3,290,20,6);
+
 }
 
 function drawRainy() {
@@ -174,7 +176,32 @@ function drawSnow() {
 
 }
 
-function animteSprite(spriteSrc) {
+function animateSprite(spriteSrc, sW, sH, fN, posH, posW, EfN) { //running at 8-10 fps (ill figure it out), making function to animate them all so i just have to edit src bcz i respect myself.
+    let img = new Image();
+    img.src = spriteSrc;
+    let animate;
+    canvas.addEventListener('mousemove', function(event){
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+        hovering = (mouseX >= posX && mouseX <= posX + sW && mouseY >= posY && mouseY <= posY + sH);
+
+    });
+    img.onload = function(){
+        let cycle = 0;
+        let hovering = false;
+        animate = setInterval(function(){
+            ctx.clearRect(0,0,sW,sH);
+            if (hovering) {
+                ctx.drawImage(img, cycle*sW, 0, sW, sH, posH, posW, sW, sH);
+                cycle = (cycle+1) % EfN;
+            } else {
+                ctx.drawImage(img, cycle*sW, 0, sW, sH, posH, posW, sW, sH);
+                cycle = (cycle+1) % fN;
+            }
+        }, 110)
+    };
+    
 
 }
 
