@@ -106,9 +106,8 @@ async function interpretCodes() { //interprets weather codes recieved from API, 
     ctx.fillStyle = 'bisque';
     ctx.font = "72px techno";
     ctx.fillText(Math.round(intData.temp_c)+'c',(canvas.width/2)-72,canvas.height/2);
-
 }
-
+7
 function offlineCodeGen() { //offline debugging mode, also here in case person grading assignment is offline
     clearCanvas();
     switch (weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) {
@@ -178,7 +177,6 @@ function buttonGen(name,clickAction) { //basically debugging function ig? need t
     button.textContent = name;
     container.appendChild(button);
     button.onclick = clickAction;
-    
 }
 
 function testFunction() {
@@ -241,10 +239,7 @@ function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-
             }
         }, 110)
     };
-    
-
 }
-
 function updatePosition() {
     let outputX = document.getElementById('xout');
     let outputY = document.getElementById('yout');
