@@ -41,6 +41,7 @@ h2 {
 }
 
 canvas {
+    background-color: transparent;
     padding-left: 0;
     padding-right: 0;
     margin-left: auto;
@@ -75,4 +76,8 @@ canvas {
 .testButton:hover {
     color: bisque;
     cursor: pointer;
+}
+
+body {
+    background-color: transparent;
 }

@@ -16,18 +16,29 @@ let weatherCodes = [1000,1003,1006,1009,1030,1063,1069,
 //const width = window.innerWidth
 //const height = window.innerHeight
 const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext('2d', {alpha:true});
 //canvas.style.position = 'relative';
 //canvas.style.top = '20px';
+const scale = window.devicePixelRatio;
 ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
+ctx.scale(scale,scale);
 const backdrop = new Image();
 backdrop.src = 'assets/backdrop.png';
 backdrop.onload = function () {
     ctx.drawImage(backdrop, 0, 0, canvas.width, canvas.height);
 };
 
+function clearCanvas() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const backdrop = new Image();
+    backdrop.src = 'assets/backdrop.png';
+    backdrop.onload = function() {
+        ctx.drawImage(backdrop,0,0,canvas.width,canvas.height);
+    }; 
+}
 function fullMode() { //operating with online functionality / full functionality of webapp
+    clearCanvas();
     interpretCodes();
     updatePosition();
 }
@@ -99,6 +110,7 @@ async function interpretCodes() { //interprets weather codes recieved from API, 
 }
 
 function offlineCodeGen() { //offline debugging mode, also here in case person grading assignment is offline
+    clearCanvas();
     switch (weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) {
         case 1000:
             drawSunny();
@@ -164,7 +176,6 @@ function buttonGen(name,clickAction) { //basically debugging function ig? need t
     const container = document.getElementById('tbContainer');
     button.classList.add('testButton');
     button.textContent = name;
- //   button.onclick = clickAction;
     container.appendChild(button);
     button.onclick = clickAction;
     
@@ -178,13 +189,15 @@ function testFunction2() {
 }
 
 function drawSunny() {
+    clearCanvas();
     console.log('you are my sunshine');
     animateSprite('assets/mrsunnyshine.png',200,200,3,canvas.width-250,canvas.height-700,6);
 }
 
 function drawRainy() {
+    clearCanvas()
     console.log('its raining');
-    //animateSprite();
+    animateSprite('assets/mrrainy.png',600,350,3,canvas.width-1325,canvas.height-700,6);
 }
 
 function drawOvercast() {
@@ -199,6 +212,7 @@ function drawSnow() {
 }
 
 function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-10 fps (ill figure it out), making function to animate them all so i just have to edit src bcz i respect myself.
+    canvas.style.backgroundColor = 'transparent';
     let img = new Image();
     img.src = spriteSrc;
     let animate;
@@ -211,13 +225,12 @@ function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-
             clicked = !clicked
             console.log('shits been clicked yahmean')
         }
-
-
     });
 
     img.onload = function(){
         let cycle = 0;
         animate = setInterval(function(){
+            ctx.globalCompositeOperation = 'source-over';
             ctx.clearRect(posW,posH,sW,sH);
             if (clicked) {
                 ctx.drawImage(img, cycle * sW, 0, sW, sH, posW, posH, sW, sH);
