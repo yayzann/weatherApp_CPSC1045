@@ -1,19 +1,22 @@
 .tSButton-container {
     display: flex;
+    align-items: center;
     justify-content: center;
+    width: 30%;
+    left: 32%;
     gap: 20px;
+    height: 30%;
+    position: absolute;
+    z-index: 100;
 }
 
 .typeSelect {
-    background-color: blueviolet;
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    background-color: black;
+    font-family: techno;
     width: 250px;
     height: 120px;
     color: white;
     font-size: large;
-    border-style: dashed;
-    border-color: bisque;
-    border-width: 5px;
     align-items: center;
     display: inline-block;
     transition: background-color 0.5s ease;
@@ -21,7 +24,7 @@
 }
 
 .typeSelect:hover{
-    background-color: aquamarine;
+    background-color: burlywood;
     color: black;
     cursor: pointer;
 }
@@ -43,5 +46,33 @@ canvas {
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 800px;
+    width: 100%;
+    height: 100%;
+}
+
+@font-face {
+    font-family: 'techno';
+    src: url(/weatherApp/assets/EHSMB.TTF);
+}
+
+.testButton {
+    font-size: small;
+    background-color: transparent;
+    border: none;
+    font-family: techno;
+    transition: color 0.5s ease;
+    margin: 5px;
+}
+
+.tbContainer {
+    position:absolute;
+    top: 70%;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.testButton:hover {
+    color: bisque;
+    cursor: pointer;
 }
