@@ -23,12 +23,13 @@ const scale = window.devicePixelRatio;
 ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 ctx.scale(scale,scale);
-const backdrop = new Image();
+/*const backdrop = new Image();
 backdrop.src = 'assets/backdrop.png';
 backdrop.onload = function () {
     ctx.drawImage(backdrop, 0, 0, canvas.width, canvas.height);
 };
-
+*/
+clearCanvas();
 function clearCanvas() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
     const backdrop = new Image();
@@ -211,6 +212,7 @@ function drawSnow() {
 
 function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-10 fps (ill figure it out), making function to animate them all so i just have to edit src bcz i respect myself.
     canvas.style.backgroundColor = 'transparent';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     let img = new Image();
     img.src = spriteSrc;
     let animate;
