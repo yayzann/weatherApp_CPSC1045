@@ -23,7 +23,7 @@ ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 clearCanvas();
 
-function clearCanvas(callback) {
+/*function clearCanvas(callback) {
     ctx.clearRect(0,0,canvas.width,canvas.height) ;
     const backdrop = new Image();
     backdrop.src = 'assets/backdrop.png';
@@ -31,11 +31,22 @@ function clearCanvas(callback) {
         ctx.drawImage(backdrop,0,0,canvas.width,canvas.height);
         if (callback) callback();
     }; 
+} */
+function clearCanvas(callback) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const backdrop = new Image();
+    backdrop.src = 'assets/backdrop.png';
+    backdrop.onload = function () {
+        ctx.drawImage(backdrop, 0, 0, canvas.width, canvas.height);
+        if (callback) callback();
+    };
 }
+
 function fullMode() { //operating with online functionality / full functionality of webapp
-    clearCanvas();
-    interpretCodes();
-    updatePosition();
+    clearCanvas(() => {
+        interpretCodes();
+        updatePosition();
+    })
 }
 
 async function interpretCodes() { //interprets weather codes recieved from API, executes functions on canvas depending on data recieved.
@@ -227,18 +238,14 @@ function testFunction2() {
 }
 
 function drawSunny() {
-    clearCanvas(() => {
-        console.log('you are my sunshine');
-        animateSprite('assets/mrsunnyshine.png', 200, 200, 3, canvas.width - canvas.width / 6, canvas.height / 15, 6);
-    });
+    console.log('you are my sunshine');
+    animateSprite('assets/mrsunnyshine.png', 200, 200, 3, canvas.width - canvas.width / 6, canvas.height / 15, 6);
 }
 
 function drawRainy() {
-    clearCanvas(() => {
-        console.log('its raining');
-        animateSprite('assets/mrrainy.png',600,350,3,canvas.width/2,canvas.height/15,6);
-        animateSprite('assets/mrrainy.png',600,350,3,canvas.width/10,canvas.height/15,6);
-    });
+    console.log('its raining');
+    animateSprite('assets/mrrainy.png',600,350,3,canvas.width/2,canvas.height/15,6);
+    animateSprite('assets/mrrainy.png',600,350,3,canvas.width/10,canvas.height/15,6);
 }
 
 function drawOvercast() {
@@ -253,9 +260,7 @@ function drawSnow() {
 }
 
 function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-10 fps (ill figure it out), making function to animate them all so i just have to edit src bcz i respect myself.
-    canvas.style.backgroundColor = 'transparent';
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let img = new Image();
+    const img = new Image();
     img.src = spriteSrc;
     let animate;
     let clicked = false;
