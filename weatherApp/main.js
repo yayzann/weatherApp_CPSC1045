@@ -19,23 +19,17 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d', {alpha:true});
 //canvas.style.position = 'relative';
 //canvas.style.top = '20px';
-const scale = window.devicePixelRatio;
 ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
-ctx.scale(scale,scale);
-/*const backdrop = new Image();
-backdrop.src = 'assets/backdrop.png';
-backdrop.onload = function () {
-    ctx.drawImage(backdrop, 0, 0, canvas.width, canvas.height);
-};
-*/
 clearCanvas();
-function clearCanvas() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+function clearCanvas(callback) {
+    ctx.clearRect(0,0,canvas.width,canvas.height) ;
     const backdrop = new Image();
     backdrop.src = 'assets/backdrop.png';
     backdrop.onload = function() {
         ctx.drawImage(backdrop,0,0,canvas.width,canvas.height);
+        if (callback) callback();
     }; 
 }
 function fullMode() { //operating with online functionality / full functionality of webapp
@@ -106,21 +100,25 @@ async function interpretCodes() { //interprets weather codes recieved from API, 
     }
     ctx.fillStyle = 'bisque';
     ctx.font = "72px techno";
-    ctx.fillText(Math.round(intData.temp_c)+'c',(canvas.width/2)-72,canvas.height/2);
+    let txt = Math.round(intData.temp_c)+'c';
+    const txtWidth = (ctx.measureText(txt).width)
+    const xCorrection = (canvas.width/2)-(txtWidth/2);
+    console.log(xCorrection);
+    ctx.fillText(txt,xCorrection,canvas.height/2);
 }
-7
+
 function offlineCodeGen() { //offline debugging mode, also here in case person grading assignment is offline
     clearCanvas();
     switch (weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) {
         case 1000:
-            drawSunny();
+            offdrawSunny();
             break;
         case 1003:
         case 1006:
         case 1009:
         case 1030:
         case 1135:
-            drawOvercast();
+            offdrawOvercast();
             break;
         case 1063:
         case 1069:
@@ -145,7 +143,7 @@ function offlineCodeGen() { //offline debugging mode, also here in case person g
         case 1246:
         case 1249:
         case 1252:
-            drawRainy();
+            offdrawRainy();
             break;
         case 1114:
         case 1117:
@@ -162,22 +160,63 @@ function offlineCodeGen() { //offline debugging mode, also here in case person g
         case 1264:
         case 1279:
         case 1282:
-            drawSnow();
+            offdrawSnow();
             break;
     }
-    buttonGen('celine',drawSunny);
-    buttonGen('fml', drawRainy);
-    buttonGen('another one', drawOvercast);
-    buttonGen('deejaay khALID', drawSnow);
+    buttonGen('celine',offdrawSunny);
+    buttonGen('fml', offdrawRainy);
+    buttonGen('another one', offdrawOvercast);
+    buttonGen('deejaay khALID', offdrawSnow);
+}
+function offdrawSunny() {
+    drawSunny();
+    clearCanvas(() => {
+        offTempGen();
+    });
+}
+function offdrawRainy() {
+    drawRainy();
+    clearCanvas(() => {
+        offTempGen();
+    });
+}
+function offdrawOvercast() {
+    drawOvercast();
+    clearCanvas(() => {
+        offTempGen();
+    });
+
+}
+function offdrawSnow() {
+    drawSnow();
+    clearCanvas(() => {
+        offTempGen();
+    });
+
 }
 
+function offTempGen() {
+    ctx.fillStyle = 'bisque';
+    ctx.font = "72px techno";
+    let txt = Math.floor((Math.random()*30)+1).toString()+'c';
+    const txtWidth = (ctx.measureText(txt).width)
+    const xCorrection = (canvas.width/2)-(txtWidth/2);
+    console.log(xCorrection);
+    console.log(txt);
+    ctx.fillText(txt,xCorrection,canvas.height/2);
+
+}
 function buttonGen(name,clickAction) { //basically debugging function ig? need to implement buttons to change weather response or smth 
     const button = document.createElement('button');
     const container = document.getElementById('tbContainer');
+    if ((container.childElementCount) === 4) {
+        return;
+    }
     button.classList.add('testButton');
     button.textContent = name;
     container.appendChild(button);
     button.onclick = clickAction;
+    
 }
 
 function testFunction() {
@@ -188,15 +227,18 @@ function testFunction2() {
 }
 
 function drawSunny() {
-    clearCanvas();
-    console.log('you are my sunshine');
-    animateSprite('assets/mrsunnyshine.png',200,200,3,canvas.width-250,canvas.height-700,6);
+    clearCanvas(() => {
+        console.log('you are my sunshine');
+        animateSprite('assets/mrsunnyshine.png', 200, 200, 3, canvas.width - canvas.width / 6, canvas.height / 15, 6);
+    });
 }
 
 function drawRainy() {
-    clearCanvas()
-    console.log('its raining');
-    animateSprite('assets/mrrainy.png',600,350,3,canvas.width-1325,canvas.height-700,6);
+    clearCanvas(() => {
+        console.log('its raining');
+        animateSprite('assets/mrrainy.png',600,350,3,canvas.width/2,canvas.height/15,6);
+        animateSprite('assets/mrrainy.png',600,350,3,canvas.width/10,canvas.height/15,6);
+    });
 }
 
 function drawOvercast() {
