@@ -23,15 +23,6 @@ ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
 clearCanvas();
 
-/*function clearCanvas(callback) {
-    ctx.clearRect(0,0,canvas.width,canvas.height) ;
-    const backdrop = new Image();
-    backdrop.src = 'assets/backdrop.png';
-    backdrop.onload = function() {
-        ctx.drawImage(backdrop,0,0,canvas.width,canvas.height);
-        if (callback) callback();
-    }; 
-} */
 function clearCanvas(callback) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const backdrop = new Image();
@@ -47,6 +38,68 @@ function fullMode() { //operating with online functionality / full functionality
         interpretCodes();
         updatePosition();
     })
+}
+
+function offlineCodeGen() { //offline debugging mode, also here in case person grading assignment is offline
+    clearCanvas();
+    switch (weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) {
+        case 1000:
+            offdrawSunny();
+            break;
+        case 1003:
+        case 1006:
+        case 1009:
+        case 1030:
+        case 1135:
+            offdrawOvercast();
+            break;
+        case 1063:
+        case 1069:
+        case 1072:
+        case 1087:
+        case 1150:
+        case 1153:
+        case 1168:
+        case 1171:
+        case 1180:
+        case 1183:
+        case 1186:
+        case 1189:
+        case 1192:
+        case 1195:
+        case 1198:
+        case 1201:
+        case 1204:
+        case 1207:
+        case 1240:
+        case 1243:
+        case 1246:
+        case 1249:
+        case 1252:
+            offdrawRainy();
+            break;
+        case 1114:
+        case 1117:
+        case 1147:
+        case 1213:
+        case 1216:
+        case 1219:
+        case 1222:
+        case 1225:
+        case 1237:
+        case 1255:
+        case 1258:
+        case 1261:
+        case 1264:
+        case 1279:
+        case 1282:
+            offdrawSnow();
+            break;
+    }
+    buttonGen('celine',offdrawSunny);
+    buttonGen('fml', offdrawRainy);
+    buttonGen('another one', offdrawOvercast);
+    buttonGen('deejaay khALID', offdrawSnow);
 }
 
 async function interpretCodes() { //interprets weather codes recieved from API, executes functions on canvas depending on data recieved.
@@ -118,66 +171,40 @@ async function interpretCodes() { //interprets weather codes recieved from API, 
     ctx.fillText(txt,xCorrection,canvas.height/2);
 }
 
-function offlineCodeGen() { //offline debugging mode, also here in case person grading assignment is offline
-    clearCanvas();
-    switch (weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) {
-        case 1000:
-            offdrawSunny();
-            break;
-        case 1003:
-        case 1006:
-        case 1009:
-        case 1030:
-        case 1135:
-            offdrawOvercast();
-            break;
-        case 1063:
-        case 1069:
-        case 1072:
-        case 1087:
-        case 1150:
-        case 1153:
-        case 1168:
-        case 1171:
-        case 1180:
-        case 1183:
-        case 1186:
-        case 1189:
-        case 1192:
-        case 1195:
-        case 1198:
-        case 1201:
-        case 1204:
-        case 1207:
-        case 1240:
-        case 1243:
-        case 1246:
-        case 1249:
-        case 1252:
-            offdrawRainy();
-            break;
-        case 1114:
-        case 1117:
-        case 1147:
-        case 1213:
-        case 1216:
-        case 1219:
-        case 1222:
-        case 1225:
-        case 1237:
-        case 1255:
-        case 1258:
-        case 1261:
-        case 1264:
-        case 1279:
-        case 1282:
-            offdrawSnow();
-            break;
+function buttonGen(name,clickAction) { //basically debugging function ig? need to implement buttons to change weather response or smth 
+    const button = document.createElement('button');
+    const container = document.getElementById('tbContainer');
+    if ((container.childElementCount) === 4) {
+        return;
     }
-    buttonGen('celine',offdrawSunny);
-    buttonGen('fml', offdrawRainy);
-    buttonGen('another one', offdrawOvercast);
-    buttonGen('deejaay khALID', offdrawSnow);
+    button.classList.add('testButton');
+    button.textContent = name;
+    container.appendChild(button);
+    button.onclick = clickAction;
+}
+
+function testFunction() {
+    console.log('test 1')
+}
+function testFunction2() {
+    console.log('test 2')
+}
+function drawSunny() {
+    console.log('you are my sunshine');
+    animateSprite('assets/mrsunnyshine.png', 200, 200, 3, canvas.width - canvas.width / 6, canvas.height / 15, 6);
+}
+function drawRainy() {
+    console.log('its raining');
+    animateSprite('assets/mrrainy.png',600,350,3,canvas.width/2,canvas.height/15,6);
+    animateSprite('assets/mrrainy.png',600,350,3,canvas.width/10,canvas.height/15,6);
+}
+function drawOvercast() {
+    console.log('its ugly out');
+    //animateSprite();
+}
+function drawSnow() {
+    console.log('merry chrysler');
+    //animateSprite();
 }
 function offdrawSunny() {
     drawSunny();
@@ -205,7 +232,6 @@ function offdrawSnow() {
     });
 
 }
-
 function offTempGen() {
     ctx.fillStyle = 'bisque';
     ctx.font = "72px techno";
@@ -217,47 +243,7 @@ function offTempGen() {
     ctx.fillText(txt,xCorrection,canvas.height/2);
 
 }
-function buttonGen(name,clickAction) { //basically debugging function ig? need to implement buttons to change weather response or smth 
-    const button = document.createElement('button');
-    const container = document.getElementById('tbContainer');
-    if ((container.childElementCount) === 4) {
-        return;
-    }
-    button.classList.add('testButton');
-    button.textContent = name;
-    container.appendChild(button);
-    button.onclick = clickAction;
-    
-}
 
-function testFunction() {
-    console.log('test 1')
-}
-function testFunction2() {
-    console.log('test 2')
-}
-
-function drawSunny() {
-    console.log('you are my sunshine');
-    animateSprite('assets/mrsunnyshine.png', 200, 200, 3, canvas.width - canvas.width / 6, canvas.height / 15, 6);
-}
-
-function drawRainy() {
-    console.log('its raining');
-    animateSprite('assets/mrrainy.png',600,350,3,canvas.width/2,canvas.height/15,6);
-    animateSprite('assets/mrrainy.png',600,350,3,canvas.width/10,canvas.height/15,6);
-}
-
-function drawOvercast() {
-    console.log('its ugly out');
-    //animateSprite();
-}
-
-function drawSnow() {
-    console.log('merry chrysler');
-    //animateSprite();
-
-}
 
 function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-10 fps (ill figure it out), making function to animate them all so i just have to edit src bcz i respect myself.
     const img = new Image();
