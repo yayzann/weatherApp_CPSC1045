@@ -1,5 +1,13 @@
+//initialization of app
 onButton.addEventListener('click',fullMode);
 offButton.addEventListener('click',offlineCodeGen);
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext('2d', {alpha:true});
+ctx.canvas.width = window.innerWidth;
+ctx.canvas.height = window.innerHeight;
+clearCanvas();
+let currentInterval = null;
+//the function gallary:
 async function getWeather() { // interaction with API
     const key = '093a6a79ca9649b09ae40739240412' //this needs to be removed from git.
     const city = 'Vancouver'; //hardcoded cuz im hoping no one outside van is testing this, probably will switch to variable
@@ -13,16 +21,6 @@ let weatherCodes = [1000,1003,1006,1009,1030,1063,1069,
     1072,1087,1114,1117,1135,1147,1150,1153,1168,1171,1180,1183,
     1186,1189,1192,1195,1201,1204,1207,1120,1213,1216,1219,1222,1225,1237,
     1240,1243,1246,1249,1252,1255,1258,1261,1264,1273,1276,1279,1282]; //index of all possible weather codes    
-//const width = window.innerWidth
-//const height = window.innerHeight
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext('2d', {alpha:true});
-//canvas.style.position = 'relative';
-//canvas.style.top = '20px';
-ctx.canvas.width = window.innerWidth;
-ctx.canvas.height = window.innerHeight;
-clearCanvas();
-
 function clearCanvas(callback) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const backdrop = new Image();
@@ -32,17 +30,29 @@ function clearCanvas(callback) {
         if (callback) callback();
     };
 }
-
+function resetDrawing() {
+    if(currentInterval) {
+        clearInterval(currentInterval);
+        currentInterval = null;
+    }
+    clearCanvas(() => {
+        console.log('everything still works Inshallah');
+    })
+}
 function fullMode() { //operating with online functionality / full functionality of webapp
     clearCanvas(() => {
         interpretCodes();
         updatePosition();
     })
 }
-
 function offlineCodeGen() { //offline debugging mode, also here in case person grading assignment is offline
-    clearCanvas();
-    switch (weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) {
+    clearCanvas(()=>{
+        buttonGen('celine',offdrawSunny);
+        buttonGen('fml', offdrawRainy);
+        buttonGen('another one', offdrawOvercast);
+        buttonGen('deejaay khALID', offdrawSnow);
+    });
+    /*switch (weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) {
         case 1000:
             offdrawSunny();
             break;
@@ -95,13 +105,8 @@ function offlineCodeGen() { //offline debugging mode, also here in case person g
         case 1282:
             offdrawSnow();
             break;
-    }
-    buttonGen('celine',offdrawSunny);
-    buttonGen('fml', offdrawRainy);
-    buttonGen('another one', offdrawOvercast);
-    buttonGen('deejaay khALID', offdrawSnow);
+    }*/
 }
-
 async function interpretCodes() { //interprets weather codes recieved from API, executes functions on canvas depending on data recieved.
     const data = await getWeather();
     const intData = {
@@ -170,7 +175,6 @@ async function interpretCodes() { //interprets weather codes recieved from API, 
     console.log(xCorrection);
     ctx.fillText(txt,xCorrection,canvas.height/2);
 }
-
 function buttonGen(name,clickAction) { //basically debugging function ig? need to implement buttons to change weather response or smth 
     const button = document.createElement('button');
     const container = document.getElementById('tbContainer');
@@ -182,7 +186,6 @@ function buttonGen(name,clickAction) { //basically debugging function ig? need t
     container.appendChild(button);
     button.onclick = clickAction;
 }
-
 function testFunction() {
     console.log('test 1')
 }
@@ -207,10 +210,9 @@ function drawSnow() {
     //animateSprite();
 }
 function offdrawSunny() {
+    resetDrawing();
     drawSunny();
-    clearCanvas(() => {
-        offTempGen();
-    });
+    offTempGen();
 }
 function offdrawRainy() {
     drawRainy();
@@ -243,8 +245,6 @@ function offTempGen() {
     ctx.fillText(txt,xCorrection,canvas.height/2);
 
 }
-
-
 function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-10 fps (ill figure it out), making function to animate them all so i just have to edit src bcz i respect myself.
     const img = new Image();
     img.src = spriteSrc;
@@ -259,7 +259,6 @@ function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-
             console.log('shits been clicked yahmean')
         }
     });
-
     img.onload = function(){
         let cycle = 0;
         animate = setInterval(function(){

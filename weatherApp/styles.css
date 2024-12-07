@@ -9,7 +9,6 @@
     position: absolute;
     z-index: 100;
 }
-
 .typeSelect {
     background-color: black;
     font-family: techno;
@@ -22,13 +21,11 @@
     transition: background-color 0.5s ease;
     
 }
-
 .typeSelect:hover{
     background-color: burlywood;
     color: black;
     cursor: pointer;
 }
-
 h1 {
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     display: flex;
@@ -39,7 +36,6 @@ h2 {
     display: flex;
     justify-content: center;
 }
-
 canvas {
     background-color: transparent;
     padding-left: 0;
@@ -50,12 +46,10 @@ canvas {
     width: 100%;
     height: 100%;
 }
-
 @font-face {
     font-family: 'techno';
     src: url(/weatherApp/assets/EHSMB.TTF);
 }
-
 .testButton {
     font-size: small;
     background-color: transparent;
@@ -64,7 +58,6 @@ canvas {
     transition: color 0.5s ease;
     margin: 5px;
 }
-
 .tbContainer {
     position:absolute;
     top: 70%;
@@ -72,12 +65,10 @@ canvas {
     gap: 10px;
     flex-wrap: wrap;
 }
-
 .testButton:hover {
     color: bisque;
     cursor: pointer;
 }
-
 body {
     background-color: transparent;
 }
