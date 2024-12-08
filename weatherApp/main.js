@@ -5,6 +5,8 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d', {alpha:true});
 ctx.canvas.width = window.innerWidth;
 ctx.canvas.height = window.innerHeight;
+let killSprite = false;
+let activeIntervals = [];
 clearCanvas();
 let currentInterval = null;
 //the function gallary:
@@ -26,18 +28,18 @@ function clearCanvas(callback) {
     const backdrop = new Image();
     backdrop.src = 'assets/backdrop.png';
     backdrop.onload = function () {
+      //  killSprite = false;
         ctx.drawImage(backdrop, 0, 0, canvas.width, canvas.height);
+        console.log('backdrop drawn.');
         if (callback) callback();
     };
 }
-function resetDrawing() {
+
+function resetInterval() {
     if(currentInterval) {
         clearInterval(currentInterval);
         currentInterval = null;
     }
-    clearCanvas(() => {
-        console.log('everything still works Inshallah');
-    })
 }
 function fullMode() { //operating with online functionality / full functionality of webapp
     clearCanvas(() => {
@@ -47,7 +49,7 @@ function fullMode() { //operating with online functionality / full functionality
 }
 function offlineCodeGen() { //offline debugging mode, also here in case person grading assignment is offline
     clearCanvas(()=>{
-        buttonGen('celine',offdrawSunny);
+        buttonGen('celine',offdrawSunny,);
         buttonGen('fml', offdrawRainy);
         buttonGen('another one', offdrawOvercast);
         buttonGen('deejaay khALID', offdrawSnow);
@@ -193,13 +195,22 @@ function testFunction2() {
     console.log('test 2')
 }
 function drawSunny() {
-    console.log('you are my sunshine');
-    animateSprite('assets/mrsunnyshine.png', 200, 200, 3, canvas.width - canvas.width / 6, canvas.height / 15, 6);
+    console.log('You are my sunshine');
+    resetIntervals();  // Ensure all previous animations are stopped
+    killSprite = true;  
+    clearCanvas(() => {
+        killSprite = false;  
+        animateSprite('assets/mrsunnyshine.png', 200, 200, 3, canvas.width - canvas.width / 6, canvas.height / 15, 6);
+    });
 }
-function drawRainy() {
-    console.log('its raining');
-    animateSprite('assets/mrrainy.png',600,350,3,canvas.width/2,canvas.height/15,6);
-    animateSprite('assets/mrrainy.png',600,350,3,canvas.width/10,canvas.height/15,6);
+function drawRainy() {  
+    console.log('It\'s raining');
+    resetIntervals();  // Ensure previous animations are stopped
+    clearCanvas(() => {
+        killSprite = false;
+        animateSprite('assets/mrrainy.png', 600, 350, 3, canvas.width / 2, canvas.height / 15, 6);
+        animateSprite('assets/mrrainy.png', 600, 350, 3, canvas.width / 10, canvas.height / 15, 6);   
+    });
 }
 function drawOvercast() {
     console.log('its ugly out');
@@ -210,15 +221,16 @@ function drawSnow() {
     //animateSprite();
 }
 function offdrawSunny() {
-    resetDrawing();
     drawSunny();
-    offTempGen();
+    setTimeout(() => {
+        offTempGen();
+    },50)
 }
 function offdrawRainy() {
     drawRainy();
-    clearCanvas(() => {
+    setTimeout(() => {
         offTempGen();
-    });
+    },50)
 }
 function offdrawOvercast() {
     drawOvercast();
@@ -243,11 +255,16 @@ function offTempGen() {
     console.log(xCorrection);
     console.log(txt);
     ctx.fillText(txt,xCorrection,canvas.height/2);
-
 }
-function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-10 fps (ill figure it out), making function to animate them all so i just have to edit src bcz i respect myself.
+/*function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-10 fps (ill figure it out), making function to animate them all so i just have to edit src bcz i respect myself.
     const img = new Image();
     img.src = spriteSrc;
+    if (killSprite) {
+        console.log('sprite killed. completely expendable though, onto the next.');
+        clearInterval(currentInterval);
+        clearCanvas();
+        return;
+    }
     let animate;
     let clicked = false;
     canvas.addEventListener('mousedown', function(event){
@@ -259,6 +276,7 @@ function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-
             console.log('shits been clicked yahmean')
         }
     });
+    if(currentInterval) clearInterval(currentInterval);
     img.onload = function(){
         let cycle = 0;
         animate = setInterval(function(){
@@ -273,7 +291,46 @@ function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-
             }
         }, 110)
     };
+} */
+function startSprite(img, sW, sH, fN, posW, posH, EfN) {
+    let cycle = 0;  
+    let clicked = false;
+    let interval = setInterval(function() {
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.clearRect(posW, posH, sW, sH);  // Clear the previous frame
+        if (clicked) {
+            ctx.drawImage(img, cycle * sW, 0, sW, sH, posW, posH, sW, sH);
+            cycle = (cycle + 1) % EfN;  // Loop through the clicked frames
+        } else {
+            ctx.drawImage(img, cycle * sW, 0, sW, sH, posW, posH, sW, sH);
+            cycle = (cycle + 1) % fN;  // Loop through the normal frames
+        }
+    }, 110); 
+    activeIntervals.push(interval); 
 }
+
+function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) {
+    if (killSprite) {
+        resetIntervals();  // Stop all intervals before starting new animation
+        return;
+    }
+    const img = new Image();
+    img.src = spriteSrc;
+    img.onload = function() {
+        startSprite(img, sW, sH, fN, posW, posH, EfN);
+    };
+    if (img.complete) {
+        startSprite(img, sW, sH, fN, posW, posH, EfN);
+    }
+}
+function resetIntervals() {
+    for (let i = 0; i < activeIntervals.length; i++) {
+        clearInterval(activeIntervals[i]);
+    }
+    activeIntervals = [];  
+}
+
+
 function updatePosition() {
     let outputX = document.getElementById('xout');
     let outputY = document.getElementById('yout');
