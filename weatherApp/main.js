@@ -150,7 +150,7 @@ function drawSunny() {
         const img = new Image();
         img.src = 'assets/mrsunnyshine.png';  // Ensure correct path to sprite image
         img.onload = () => {
-            animateSprite(img, 200, 200, 6, canvas.width / 2 - 100, canvas.height / 15, 6);  // Start animation
+            animateSprite('assets/mrsunnyshine.png', 200, 200, 3, canvas.width / 2 - 100, canvas.height / 15, 6);  // Start animation
         };
     });
 }
@@ -212,7 +212,6 @@ function startSprite(img, sW, sH, fN, posW, posH, EfN) {
     let cycle = 0;  // Initialize the frame cycle counter
     let interval = setInterval(function() {
         ctx.clearRect(posW, posH, sW, sH);  // Clear the previous frame area
-
         ctx.drawImage(img, cycle * sW, 0, sW, sH, posW, posH, sW, sH);  // Draw the current frame
         cycle = (cycle + 1) % fN;  // Loop through the normal frames
 
@@ -224,14 +223,12 @@ function startSprite(img, sW, sH, fN, posW, posH, EfN) {
 
     activeIntervals.push(interval);  // Add to active intervals to manage them
 }
-
 function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) {
     console.log(spriteSrc);
     if (killSprite) {
         resetIntervals();  // Stop all previous animations before starting a new one
         return;
     }
-
     const img = new Image();
     img.src = spriteSrc;  // Load the sprite image
     img.onload = () => {
@@ -240,7 +237,6 @@ function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) {
     img.onerror = function() {
         console.error('Failed to load image:', spriteSrc);
     };
-
     // Handle the case when the image might already be loaded
     if (img.complete) {
         startSprite(img, sW, sH, fN, posW, posH, EfN);
@@ -252,8 +248,6 @@ function resetIntervals() {
     }
     activeIntervals = [];  
 }
-
-
 function updatePosition() {
     let outputX = document.getElementById('xout');
     let outputY = document.getElementById('yout');
