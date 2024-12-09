@@ -9,9 +9,6 @@ let killSprite = false;
 let activeIntervals = [];
 clearCanvas();
 let currentInterval = null;
-let online 
-let randTemp = (Math.floor((Math.random() * 30) + 1).toString() + 'c'); // Generate random temperature
-
 //the function gallary:
 async function getWeather() { // interaction with API
     const key = '093a6a79ca9649b09ae40739240412' //this needs to be removed from git.
@@ -27,16 +24,15 @@ let weatherCodes = [1000,1003,1006,1009,1030,1063,1069,
     1186,1189,1192,1195,1201,1204,1207,1120,1213,1216,1219,1222,1225,1237,
     1240,1243,1246,1249,1252,1255,1258,1261,1264,1273,1276,1279,1282]; //index of all possible weather codes    
 function clearCanvas(callback) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
     const backdrop = new Image();
     backdrop.src = 'assets/backdrop.png';
     backdrop.onload = function () {
-        ctx.drawImage(backdrop, 0, 0, canvas.width, canvas.height); // Ensure backdrop is drawn first
+        ctx.drawImage(backdrop, 0, 0, canvas.width, canvas.height); // ensure backdrop is drawn first
         console.log('Backdrop drawn.');
         if (callback) callback();
     };
 }
-
 function resetInterval() {
     if(currentInterval) {
         clearInterval(currentInterval);
@@ -44,7 +40,7 @@ function resetInterval() {
     }
 }
 function fullMode() { //operating with online functionality / full functionality of webapp
-    let online = true;
+    //let online = true;
     clearCanvas(() => {
         resetIntervals();
         interpretCodes();
@@ -119,15 +115,7 @@ async function interpretCodes() { //interprets weather codes recieved from API, 
         case 1282:
             drawSnow();
             break;
-    }/*
-    ctx.fillStyle = 'bisque';
-    ctx.font = "72px techno";
-    let txt = Math.round(intData.temp_c)+'c';
-    const txtWidth = (ctx.measureText(txt).width)
-    const xCorrection = (canvas.width/2)-(txtWidth/2);
-    console.log(xCorrection);
-    ctx.fillText(txt,xCorrection,canvas.height/2); */
-
+    }
 }
 function buttonGen(name,clickAction) { //basically debugging function ig? need to implement buttons to change weather response or smth 
     const button = document.createElement('button');
@@ -140,33 +128,25 @@ function buttonGen(name,clickAction) { //basically debugging function ig? need t
     container.appendChild(button);
     button.onclick = clickAction;
 }
-function testFunction() {
-    console.log('test 1')
-}
-function testFunction2() {
-    console.log('test 2')
-}
 function drawSunny() {
     console.log('You are my sunshine');
-    resetIntervals();  // Ensure all previous animations are stopped
-    killSprite = true;  // Set the flag to kill previous sprite if any
-
+    resetIntervals();  
+    killSprite = true;  
     clearCanvas(() => {
-        killSprite = false;  // Reset killSprite flag after clearing the canvas
+        killSprite = false;
         const img = new Image();
-        img.src = 'assets/mrsunnyshine.png';  // Ensure correct path to sprite image
+        img.src = 'assets/mrsunnyshine.png';  
         img.onload = () => {
-            animateSprite(img.src, 200, 200, 3, canvas.width - canvas.width / 6, canvas.height / 15, 6); // Draw image directly
+            animateSprite(img.src, 200, 200, 3, canvas.width - canvas.width / 6, canvas.height / 15, 6); 
         };
         img.onerror = () => {
             console.error("Failed to load image.");
         };
     });
 }
-
 function drawRainy() {  
     console.log('It\'s raining');
-    resetIntervals();  // Ensure previous animations are stopped
+    resetIntervals(); 
     killSprite = true;
     clearCanvas(() => {
         killSprite = false;
@@ -207,65 +187,43 @@ function drawSnow() {
 function offdrawSunny() {
     drawSunny();
     setTimeout(() => {
-        offTempGen();
+        tempDraw();
     },50)
 }
 function offdrawRainy() {
     drawRainy();
     setTimeout(() => {
-        offTempGen();
+        tempDraw();
     },50)
 }
 function offdrawOvercast() {
     drawOvercast();
     setTimeout(() => {
-        offTempGen();
+        tempDraw();
     },50)
 
 }
 function offdrawSnow() {
     drawSnow();
     setTimeout(() => {
-        offTempGen();
+        tempDraw();
     },50)
 
 }
 function tempDraw() {
-    if (online === true) {
-        console.log(intData.temp_c);
-        ctx.fillStyle = 'bisque';
-        ctx.font = "72px techno";
-        let txt = Math.round(intData.temp_c)+'c';
-        const txtWidth = (ctx.measureText(txt).width)
-        const xCorrection = (canvas.width/2)-(txtWidth/2);
-        ctx.fillText(txt,xCorrection,canvas.height-(canvas.height/4));
-    } else {
-        console.log('were in offline mode')
-        ctx.fillStyle = 'bisque';
-        ctx.font = "72px techno";
-        const txtWidth = (ctx.measureText(randTemp).width);  // Use the global randTemp
-        const xCorrection = (canvas.width / 2) - (txtWidth / 2);
-        console.log("Offline Temp displayed:", randTemp);  // Log the offline temperature
-        ctx.fillText(randTemp, xCorrection, canvas.height - (canvas.height / 4));
-    }
-}
-function offTempGen(temp) {
     ctx.fillStyle = 'bisque';
     ctx.font = "72px techno";
-    const txtWidth = (ctx.measureText(temp).width)
+    let txt = Math.round(intData.temp_c)+'c';
+    const txtWidth = (ctx.measureText(txt).width)
     const xCorrection = (canvas.width/2)-(txtWidth/2);
-    console.log(temp);
-    ctx.fillText(temp,xCorrection,canvas.height-(canvas.height/4));
+    ctx.fillText(txt,xCorrection,canvas.height-(canvas.height/4));
 }
-
 let backgroundImg = new Image();
 backgroundImg.src = 'assets/backdrop.png'; // Path to your background image
-
 backgroundImg.onload = () => {
     // Once loaded, draw the initial background
     ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
 };
-
 function startSprite(img, sW, sH, fN, posW, posH, EfN) {
     let cycle = 0;  
     const interval = setInterval(() => {
