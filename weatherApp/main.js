@@ -1,6 +1,14 @@
 //initialization of app
-onButton.addEventListener('click',fullMode);
-offButton.addEventListener('click',offlineMode);
+onButton.addEventListener('click', function() {
+    fullMode();
+    hideButtonz();
+});
+
+offButton.addEventListener('click', function() {
+    offlineMode();
+    hideButtonz();
+});
+//bellow is the setup for the app, initializing the canvas and any objects/variables/functions that need to be init'd beforehand.
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d', {alpha:true});
 ctx.canvas.width = window.innerWidth;
@@ -21,6 +29,7 @@ async function getWeather() { // interaction with API
     console.log(data);
     return data;
 }
+
 let weatherCodes = [1000,1003,1006,1009,1030,1063,1069,
     1072,1087,1114,1117,1135,1147,1150,1153,1168,1171,1180,1183,
     1186,1189,1192,1195,1201,1204,1207,1120,1213,1216,1219,1222,1225,1237,
@@ -35,7 +44,7 @@ function clearCanvas(callback) {
         if (callback) callback();
     };
 }
-function resetInterval() {
+function resetInterval() { //resets the aniamtion intervals
     if(currentInterval) {
         clearInterval(currentInterval);
         currentInterval = null;
@@ -127,6 +136,7 @@ function buttonGen(name,clickAction) { //basically debugging function ig? need t
     container.appendChild(button);
     button.onclick = clickAction;
 }
+//bellow are the functions used to draw different animations. sorry the animations aren't marvelous, I drew them all by hand and I have nerve damage.
 function drawSunny() {
     console.log('You are my sunshine');
     resetIntervals();  
@@ -209,7 +219,7 @@ function offdrawSnow() {
     },50)
 
 }
-function tempDraw() {
+function tempDraw() { //draws temperature based on API info
     ctx.fillStyle = 'bisque';
     ctx.font = "72px techno";
     let txt = Math.round(intData.temp_c)+'c';
@@ -217,12 +227,14 @@ function tempDraw() {
     const xCorrection = (canvas.width/2)-(txtWidth/2);
     ctx.fillText(txt,xCorrection,canvas.height-(canvas.height/4));
 }
+//bellow fixes any transparency issues with redrawing animations
 let backgroundImg = new Image();
-backgroundImg.src = 'assets/backdrop.png'; // Path to your background image
+backgroundImg.src = 'assets/backdrop.png'; 
 backgroundImg.onload = () => {
     // Once loaded, draw the initial background
     ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
 };
+//sprite animation sequences
 function startSprite(img, sW, sH, fN, posW, posH, EfN) {
     let cycle = 0;  
     const interval = setInterval(() => {
@@ -255,15 +267,13 @@ function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) {
         startSprite(img, sW, sH, fN, posW, posH, EfN);
     }
 }
+//resets the intervals for each animation sequence
 function resetIntervals() {
     for (let i = 0; i < activeIntervals.length; i++) {
         clearInterval(activeIntervals[i]);
     }
     activeIntervals = [];  
 }
-function updatePosition() {
-    let outputX = document.getElementById('xout');
-    let outputY = document.getElementById('yout');
-    outputX.innerHTML = (event.offsetX);
-    outputY.innerHTML = (event.offsetY);
-} //for debugging
+function hideButtonz() { //self explanatory I think.
+    document.getElementById("overlay").style.display = "none";
+}
