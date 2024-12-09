@@ -9,6 +9,8 @@ let killSprite = false;
 let activeIntervals = [];
 clearCanvas();
 let currentInterval = null;
+const intData = {};
+interpretCodes();
 //the function gallary:
 async function getWeather() { // interaction with API
     const key = '093a6a79ca9649b09ae40739240412' //this needs to be removed from git.
@@ -43,8 +45,60 @@ function fullMode() { //operating with online functionality / full functionality
     //let online = true;
     clearCanvas(() => {
         resetIntervals();
-        interpretCodes();
-        updatePosition();
+        switch (intData.code) {
+            case 1000:
+                drawSunny();
+                break;
+            case 1003:
+            case 1006:
+            case 1009:
+            case 1030:
+            case 1135:
+                drawOvercast();
+                break;
+            case 1063:
+            case 1069:
+            case 1072:
+            case 1087:
+            case 1150:
+            case 1153:
+            case 1168:
+            case 1171:
+            case 1180:
+            case 1183:
+            case 1186:
+            case 1189:
+            case 1192:
+            case 1195:
+            case 1198:
+            case 1201:
+            case 1204:
+            case 1207:
+            case 1240:
+            case 1243:
+            case 1246:
+            case 1249:
+            case 1252:
+                drawRainy();
+                break;
+            case 1114:
+            case 1117:
+            case 1147:
+            case 1213:
+            case 1216:
+            case 1219:
+            case 1222:
+            case 1225:
+            case 1237:
+            case 1255:
+            case 1258:
+            case 1261:
+            case 1264:
+            case 1279:
+            case 1282:
+                drawSnow();
+                break;
+        }
     })
 }
 function offlineMode() { //offline debugging mode, also here in case person grading assignment is offline
@@ -57,65 +111,10 @@ function offlineMode() { //offline debugging mode, also here in case person grad
     });
     
 }
-const intData = {};
 async function interpretCodes() { //interprets weather codes recieved from API, executes functions on canvas depending on data recieved.
     const data = await getWeather();
     intData.code = data.current.condition.code;
     intData.temp_c = data.current.temp_c;
-     switch (intData.code) {
-        case 1000:
-            drawSunny();
-            break;
-        case 1003:
-        case 1006:
-        case 1009:
-        case 1030:
-        case 1135:
-            drawOvercast();
-            break;
-        case 1063:
-        case 1069:
-        case 1072:
-        case 1087:
-        case 1150:
-        case 1153:
-        case 1168:
-        case 1171:
-        case 1180:
-        case 1183:
-        case 1186:
-        case 1189:
-        case 1192:
-        case 1195:
-        case 1198:
-        case 1201:
-        case 1204:
-        case 1207:
-        case 1240:
-        case 1243:
-        case 1246:
-        case 1249:
-        case 1252:
-            drawRainy();
-            break;
-        case 1114:
-        case 1117:
-        case 1147:
-        case 1213:
-        case 1216:
-        case 1219:
-        case 1222:
-        case 1225:
-        case 1237:
-        case 1255:
-        case 1258:
-        case 1261:
-        case 1264:
-        case 1279:
-        case 1282:
-            drawSnow();
-            break;
-    }
 }
 function buttonGen(name,clickAction) { //basically debugging function ig? need to implement buttons to change weather response or smth 
     const button = document.createElement('button');
