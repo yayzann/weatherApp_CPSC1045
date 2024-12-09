@@ -1,6 +1,6 @@
 //initialization of app
 onButton.addEventListener('click',fullMode);
-offButton.addEventListener('click',offlineCodeGen);
+offButton.addEventListener('click',offlineMode);
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext('2d', {alpha:true});
 ctx.canvas.width = window.innerWidth;
@@ -9,6 +9,9 @@ let killSprite = false;
 let activeIntervals = [];
 clearCanvas();
 let currentInterval = null;
+let online 
+let randTemp = (Math.floor((Math.random() * 30) + 1).toString() + 'c'); // Generate random temperature
+
 //the function gallary:
 async function getWeather() { // interaction with API
     const key = '093a6a79ca9649b09ae40739240412' //this needs to be removed from git.
@@ -41,26 +44,28 @@ function resetInterval() {
     }
 }
 function fullMode() { //operating with online functionality / full functionality of webapp
+    let online = true;
     clearCanvas(() => {
+        resetIntervals();
         interpretCodes();
         updatePosition();
     })
 }
-function offlineCodeGen() { //offline debugging mode, also here in case person grading assignment is offline
+function offlineMode() { //offline debugging mode, also here in case person grading assignment is offline
     clearCanvas(()=>{
-        buttonGen('celine',offdrawSunny,);
-        buttonGen('fml', offdrawRainy);
-        buttonGen('another one', offdrawOvercast);
+        resetIntervals();
+        buttonGen('Sunny',offdrawSunny);
+        buttonGen('Rainy', offdrawRainy);
+        buttonGen('Overcast', offdrawOvercast);
         buttonGen('deejaay khALID', offdrawSnow);
     });
     
 }
+const intData = {};
 async function interpretCodes() { //interprets weather codes recieved from API, executes functions on canvas depending on data recieved.
     const data = await getWeather();
-    const intData = {
-        code: data.current.condition.code,
-        temp_c: data.current.temp_c 
-    }
+    intData.code = data.current.condition.code;
+    intData.temp_c = data.current.temp_c;
      switch (intData.code) {
         case 1000:
             drawSunny();
@@ -114,14 +119,15 @@ async function interpretCodes() { //interprets weather codes recieved from API, 
         case 1282:
             drawSnow();
             break;
-    }
+    }/*
     ctx.fillStyle = 'bisque';
     ctx.font = "72px techno";
     let txt = Math.round(intData.temp_c)+'c';
     const txtWidth = (ctx.measureText(txt).width)
     const xCorrection = (canvas.width/2)-(txtWidth/2);
     console.log(xCorrection);
-    ctx.fillText(txt,xCorrection,canvas.height/2);
+    ctx.fillText(txt,xCorrection,canvas.height/2); */
+
 }
 function buttonGen(name,clickAction) { //basically debugging function ig? need to implement buttons to change weather response or smth 
     const button = document.createElement('button');
@@ -150,7 +156,10 @@ function drawSunny() {
         const img = new Image();
         img.src = 'assets/mrsunnyshine.png';  // Ensure correct path to sprite image
         img.onload = () => {
-            animateSprite('assets/mrsunnyshine.png', 200, 200, 3, canvas.width / 2 - 100, canvas.height / 15, 6);  // Start animation
+            animateSprite(img.src, 200, 200, 3, canvas.width - canvas.width / 6, canvas.height / 15, 6); // Draw image directly
+        };
+        img.onerror = () => {
+            console.error("Failed to load image.");
         };
     });
 }
@@ -158,19 +167,42 @@ function drawSunny() {
 function drawRainy() {  
     console.log('It\'s raining');
     resetIntervals();  // Ensure previous animations are stopped
+    killSprite = true;
     clearCanvas(() => {
         killSprite = false;
-        animateSprite('assets/mrrainy.png', 600, 350, 3, canvas.width / 2, canvas.height / 15, 6);
-        animateSprite('assets/mrrainy.png', 600, 350, 3, canvas.width / 10, canvas.height / 15, 6);   
+        const img = new Image();
+        img.src = 'assets/mrrainy2.png';
+        img.onload = () => {
+            animateSprite('assets/mrrainy2.png', 1200, 350, 3, canvas.width / 9, canvas.height / 15, 3);
+        }
     });
 }
 function drawOvercast() {
     console.log('its ugly out');
-    //animateSprite();
+    resetIntervals();
+    killSprite = true;
+    clearCanvas(() => {
+        killSprite = false;
+        const img = new Image();
+        img.src = 'assets/overcast.png';
+        img.onload = () => {
+            animateSprite('assets/overcast.png',1200,350,3,canvas.width/9,canvas.height/15,3);
+        }
+    })
+    
 }
 function drawSnow() {
     console.log('merry chrysler');
-    //animateSprite();
+    resetIntervals();
+    killSprite = true;
+    clearCanvas(() => {
+        killSprite = false;
+        const img = new Image();
+        img.src = 'assets/snowy.png';
+        img.onload = () => {
+            animateSprite('assets/snowy.png',1200,350,3,canvas.width/9,canvas.height/15,3);
+        }
+    })
 }
 function offdrawSunny() {
     drawSunny();
@@ -186,42 +218,66 @@ function offdrawRainy() {
 }
 function offdrawOvercast() {
     drawOvercast();
-    clearCanvas(() => {
+    setTimeout(() => {
         offTempGen();
-    });
+    },50)
 
 }
 function offdrawSnow() {
     drawSnow();
-    clearCanvas(() => {
+    setTimeout(() => {
         offTempGen();
-    });
+    },50)
 
 }
-function offTempGen() {
+function tempDraw() {
+    if (online === true) {
+        console.log(intData.temp_c);
+        ctx.fillStyle = 'bisque';
+        ctx.font = "72px techno";
+        let txt = Math.round(intData.temp_c)+'c';
+        const txtWidth = (ctx.measureText(txt).width)
+        const xCorrection = (canvas.width/2)-(txtWidth/2);
+        ctx.fillText(txt,xCorrection,canvas.height-(canvas.height/4));
+    } else {
+        console.log('were in offline mode')
+        ctx.fillStyle = 'bisque';
+        ctx.font = "72px techno";
+        const txtWidth = (ctx.measureText(randTemp).width);  // Use the global randTemp
+        const xCorrection = (canvas.width / 2) - (txtWidth / 2);
+        console.log("Offline Temp displayed:", randTemp);  // Log the offline temperature
+        ctx.fillText(randTemp, xCorrection, canvas.height - (canvas.height / 4));
+    }
+}
+function offTempGen(temp) {
     ctx.fillStyle = 'bisque';
     ctx.font = "72px techno";
-    let txt = Math.floor((Math.random()*30)+1).toString()+'c';
-    const txtWidth = (ctx.measureText(txt).width)
+    const txtWidth = (ctx.measureText(temp).width)
     const xCorrection = (canvas.width/2)-(txtWidth/2);
-    console.log(xCorrection);
-    console.log(txt);
-    ctx.fillText(txt,xCorrection,canvas.height/2);
+    console.log(temp);
+    ctx.fillText(temp,xCorrection,canvas.height-(canvas.height/4));
 }
+
+let backgroundImg = new Image();
+backgroundImg.src = 'assets/backdrop.png'; // Path to your background image
+
+backgroundImg.onload = () => {
+    // Once loaded, draw the initial background
+    ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
+};
+
 function startSprite(img, sW, sH, fN, posW, posH, EfN) {
-    let cycle = 0;  // Initialize the frame cycle counter
-    let interval = setInterval(function() {
-        ctx.clearRect(posW, posH, sW, sH);  // Clear the previous frame area
-        ctx.drawImage(img, cycle * sW, 0, sW, sH, posW, posH, sW, sH);  // Draw the current frame
-        cycle = (cycle + 1) % fN;  // Loop through the normal frames
+    let cycle = 0;  
+    const interval = setInterval(() => {
+        // Clear only the sprite area
+        ctx.clearRect(posW, posH, sW, sH);
+        ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, cycle * sW, 0, sW, sH, posW, posH, sW, sH);
+        tempDraw();
+        cycle = (cycle + 1) % fN;
+    }, 110);
 
-        // Stop the animation if killSprite flag is set
-        if (killSprite) {
-            clearInterval(interval);  // Stop the interval (animation)
-        }
-    }, 110);  // Adjust the frame rate as needed
-
-    activeIntervals.push(interval);  // Add to active intervals to manage them
+    activeIntervals.push(interval); // Store interval for cleanup
 }
 function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) {
     console.log(spriteSrc);
