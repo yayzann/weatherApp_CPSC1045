@@ -24,13 +24,12 @@ let weatherCodes = [1000,1003,1006,1009,1030,1063,1069,
     1186,1189,1192,1195,1201,1204,1207,1120,1213,1216,1219,1222,1225,1237,
     1240,1243,1246,1249,1252,1255,1258,1261,1264,1273,1276,1279,1282]; //index of all possible weather codes    
 function clearCanvas(callback) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
     const backdrop = new Image();
     backdrop.src = 'assets/backdrop.png';
     backdrop.onload = function () {
-      //  killSprite = false;
-        ctx.drawImage(backdrop, 0, 0, canvas.width, canvas.height);
-        console.log('backdrop drawn.');
+        ctx.drawImage(backdrop, 0, 0, canvas.width, canvas.height); // Ensure backdrop is drawn first
+        console.log('Backdrop drawn.');
         if (callback) callback();
     };
 }
@@ -54,60 +53,7 @@ function offlineCodeGen() { //offline debugging mode, also here in case person g
         buttonGen('another one', offdrawOvercast);
         buttonGen('deejaay khALID', offdrawSnow);
     });
-    /*switch (weatherCodes[(Math.floor(Math.random()*weatherCodes.length))]) {
-        case 1000:
-            offdrawSunny();
-            break;
-        case 1003:
-        case 1006:
-        case 1009:
-        case 1030:
-        case 1135:
-            offdrawOvercast();
-            break;
-        case 1063:
-        case 1069:
-        case 1072:
-        case 1087:
-        case 1150:
-        case 1153:
-        case 1168:
-        case 1171:
-        case 1180:
-        case 1183:
-        case 1186:
-        case 1189:
-        case 1192:
-        case 1195:
-        case 1198:
-        case 1201:
-        case 1204:
-        case 1207:
-        case 1240:
-        case 1243:
-        case 1246:
-        case 1249:
-        case 1252:
-            offdrawRainy();
-            break;
-        case 1114:
-        case 1117:
-        case 1147:
-        case 1213:
-        case 1216:
-        case 1219:
-        case 1222:
-        case 1225:
-        case 1237:
-        case 1255:
-        case 1258:
-        case 1261:
-        case 1264:
-        case 1279:
-        case 1282:
-            offdrawSnow();
-            break;
-    }*/
+    
 }
 async function interpretCodes() { //interprets weather codes recieved from API, executes functions on canvas depending on data recieved.
     const data = await getWeather();
@@ -197,12 +143,18 @@ function testFunction2() {
 function drawSunny() {
     console.log('You are my sunshine');
     resetIntervals();  // Ensure all previous animations are stopped
-    killSprite = true;  
+    killSprite = true;  // Set the flag to kill previous sprite if any
+
     clearCanvas(() => {
-        killSprite = false;  
-        animateSprite('assets/mrsunnyshine.png', 200, 200, 3, canvas.width - canvas.width / 6, canvas.height / 15, 6);
+        killSprite = false;  // Reset killSprite flag after clearing the canvas
+        const img = new Image();
+        img.src = 'assets/mrsunnyshine.png';  // Ensure correct path to sprite image
+        img.onload = () => {
+            animateSprite(img, 200, 200, 6, canvas.width / 2 - 100, canvas.height / 15, 6);  // Start animation
+        };
     });
 }
+
 function drawRainy() {  
     console.log('It\'s raining');
     resetIntervals();  // Ensure previous animations are stopped
@@ -256,69 +208,40 @@ function offTempGen() {
     console.log(txt);
     ctx.fillText(txt,xCorrection,canvas.height/2);
 }
-/*function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) { //running at 8-10 fps (ill figure it out), making function to animate them all so i just have to edit src bcz i respect myself.
-    const img = new Image();
-    img.src = spriteSrc;
-    if (killSprite) {
-        console.log('sprite killed. completely expendable though, onto the next.');
-        clearInterval(currentInterval);
-        clearCanvas();
-        return;
-    }
-    let animate;
-    let clicked = false;
-    canvas.addEventListener('mousedown', function(event){
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = event.clientX - rect.left;
-        const mouseY = event.clientY - rect.top;
-        if (mouseX >= posW && mouseX <= posW + sW && mouseY >= posH && mouseY <= posH + sH) {
-            clicked = !clicked
-            console.log('shits been clicked yahmean')
-        }
-    });
-    if(currentInterval) clearInterval(currentInterval);
-    img.onload = function(){
-        let cycle = 0;
-        animate = setInterval(function(){
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.clearRect(posW,posH,sW,sH);
-            if (clicked) {
-                ctx.drawImage(img, cycle * sW, 0, sW, sH, posW, posH, sW, sH);
-                cycle = (cycle+1) % EfN;
-            } else {
-                ctx.drawImage(img, cycle * sW, 0, sW, sH, posW, posH, sW, sH);
-                cycle = (cycle+1) % fN;
-            }
-        }, 110)
-    };
-} */
 function startSprite(img, sW, sH, fN, posW, posH, EfN) {
-    let cycle = 0;  
-    let clicked = false;
+    let cycle = 0;  // Initialize the frame cycle counter
     let interval = setInterval(function() {
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.clearRect(posW, posH, sW, sH);  // Clear the previous frame
-        if (clicked) {
-            ctx.drawImage(img, cycle * sW, 0, sW, sH, posW, posH, sW, sH);
-            cycle = (cycle + 1) % EfN;  // Loop through the clicked frames
-        } else {
-            ctx.drawImage(img, cycle * sW, 0, sW, sH, posW, posH, sW, sH);
-            cycle = (cycle + 1) % fN;  // Loop through the normal frames
+        ctx.clearRect(posW, posH, sW, sH);  // Clear the previous frame area
+
+        ctx.drawImage(img, cycle * sW, 0, sW, sH, posW, posH, sW, sH);  // Draw the current frame
+        cycle = (cycle + 1) % fN;  // Loop through the normal frames
+
+        // Stop the animation if killSprite flag is set
+        if (killSprite) {
+            clearInterval(interval);  // Stop the interval (animation)
         }
-    }, 110); 
-    activeIntervals.push(interval); 
+    }, 110);  // Adjust the frame rate as needed
+
+    activeIntervals.push(interval);  // Add to active intervals to manage them
 }
 
 function animateSprite(spriteSrc, sW, sH, fN, posW, posH, EfN) {
+    console.log(spriteSrc);
     if (killSprite) {
-        resetIntervals();  // Stop all intervals before starting new animation
+        resetIntervals();  // Stop all previous animations before starting a new one
         return;
     }
+
     const img = new Image();
-    img.src = spriteSrc;
-    img.onload = function() {
-        startSprite(img, sW, sH, fN, posW, posH, EfN);
+    img.src = spriteSrc;  // Load the sprite image
+    img.onload = () => {
+        startSprite(img, sW, sH, fN, posW, posH, EfN);  // Start the animation when image is loaded
     };
+    img.onerror = function() {
+        console.error('Failed to load image:', spriteSrc);
+    };
+
+    // Handle the case when the image might already be loaded
     if (img.complete) {
         startSprite(img, sW, sH, fN, posW, posH, EfN);
     }
